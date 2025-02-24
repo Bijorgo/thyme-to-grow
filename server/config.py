@@ -4,6 +4,8 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.exc import IntegrityError
 
 # init flask
 app = Flask(__name__)
