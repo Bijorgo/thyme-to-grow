@@ -28,8 +28,9 @@ class Garden(db.Model):
     #location = db.Column(db.String)
     # Relationships
     cultivated = db.relationship("CultivatedPlants", back_populates="gardens")
+    player = db.relationship("Player", back_populates="gardens")
     # Serialize rules
-    serializer_rules = ('cultivated', '-cultivated.gardens')
+    serializer_rules = ('cultivated', 'player', '-cultivated.gardens', '-player.gardens')
 
 # CultivatedPlants
 class CultivatePlants(db.Model):
@@ -56,9 +57,14 @@ class FieldGuide(db.Model):
     # Serialize rules
     serializer_rules = ('plants', '-plants.guide')
 
-# Character
-class Character(db.Model):
-    __tablename__="characters"
+# Player
+class Player(db.Model):
+    __tablename__="players"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    garden_id = db.Column(db.Integer, db.ForeignKey('gardens.id'))
+    # Relationships
+    gardens = db.relationship("Garden", back_populates="player")
+    # Serializer rules
+    serielaizer_rules = ('gardens', '-gardens.player')
