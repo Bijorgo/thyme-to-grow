@@ -29,6 +29,7 @@ class Garden(db.Model):
     # Relationships
     cultivated = db.relationship("CultivatedPlants", back_populates="gardens")
     player = db.relationship("Player", back_populates="gardens")
+    plants = association_proxy('cultivated-plants', 'plants')
     # Serialize rules
     serializer_rules = ('cultivated', 'player', '-cultivated.gardens', '-player.gardens')
 
