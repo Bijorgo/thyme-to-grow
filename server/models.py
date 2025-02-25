@@ -9,8 +9,8 @@ class Plant(db.Model):
     __tablename__="plants"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    level = db.Column(db.Integer)
+    name = db.Column(db.String, nullable=False)
+    level = db.Column(db.Integer, nullable=False)
     #type = db.Column(db.String)
     #rarity = db.Column(db.String)
     # Relationships
@@ -24,7 +24,7 @@ class Garden(db.Model):
     __tablename__="gardens"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, default="Garden")
     #location = db.Column(db.String)
     # Relationships
     cultivated = db.relationship("CultivatedPlants", back_populates="gardens")
@@ -37,8 +37,8 @@ class CultivatePlants(db.Model):
     __tablename__="cultivated-plants"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'))
-    garden_id = db.Column(db.Integer, db.ForeignKey('gardens.id'))
+    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'), nullable=False)
+    garden_id = db.Column(db.Integer, db.ForeignKey('gardens.id'), nullable=False)
     # Relationships
     plants = db.relationship("Plant", back_populates="cultivated")
     gardens = db.relationship("Garden", back_populates="cultivated")
@@ -50,8 +50,8 @@ class FieldGuide(db.Model):
     __tablename__="field-guide"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.Boolean) # default to false
-    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'))
+    status = db.Column(db.Boolean, nullable=False, default=False) # default to false
+    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'), nullable=False)
     # Relationships
     plants = db.relationship("Plant", back_populates="guide")
     # Serialize rules
@@ -62,8 +62,8 @@ class Player(db.Model):
     __tablename__="players"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    garden_id = db.Column(db.Integer, db.ForeignKey('gardens.id'))
+    name = db.Column(db.String, nullable=False, default="Player")
+    garden_id = db.Column(db.Integer, db.ForeignKey('gardens.id'), nullable=False)
     # Relationships
     gardens = db.relationship("Garden", back_populates="player")
     # Serializer rules
