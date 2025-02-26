@@ -39,7 +39,8 @@ class GardenResource(Resource):
         gardens = Garden.query.all()
         if not gardens:
             return { "gardens": [] }, 200
-        garden_list = [{ "name": garden.name} for garden in gardens]
+        
+        garden_list = [garden.to_dict() for garden in gardens]
         return { "gardens": garden_list }, 200
     #def post(self):
         #pass
@@ -63,8 +64,10 @@ class FieldGuideResource(Resource):
         all_plants = FieldGuide.query.all()
         if not all_plants:
             return { "message": "Error: no plants in database" }, 404
-        plant_list = [{ "plant": plant.plants} for plant in all_plants]
+        
+        plant_list = [{ "plant": plant.plants.to_dict() } for plant in all_plants]
         return { "plants": plant_list}, 200
+    
     def patch(self):
         # toggle status found /not yet found
         pass
@@ -72,10 +75,7 @@ class FieldGuideResource(Resource):
 class PlayerResource(Resource):
     def get(self):
         players = Player.query.all()
-        if not players:
-            return { "players": [] }
-        player_list = [{ "name": player.name, "gardens": player.gardens} for player in players]
-        return{ "players": player_list}, 200
+        return {"players": [player.to_dict() for player in players]}, 200
     
     def post(self):
         data = request.get_json()
