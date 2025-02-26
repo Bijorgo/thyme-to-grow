@@ -18,6 +18,18 @@ class Plant(db.Model):
     guide = db.relationship("FieldGuide", back_populates="plants")
     # Serialize rules
     serializer_rules = ('cultivated', 'guide', '-cultivated.plants', '-guide.plants')
+    # Validations
+    @validates("name")
+    def validate_name(self, key, value):
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("Plant name must be a non-empty string.")
+        return value
+    
+    @validates("level")
+    def validate_level(self, key, value):
+        if not isinstance(value, int) or not value.strip():
+            raise ValueError("Level must be assigned")
+        return value
 
 # Garden
 class Garden(db.Model):
@@ -32,6 +44,12 @@ class Garden(db.Model):
     plants = association_proxy('cultivated-plants', 'plants')
     # Serialize rules
     serializer_rules = ('cultivated', 'player', '-cultivated.gardens', '-player.gardens')
+    # Validations
+    @validates("name")
+    def validate_name(self, key, value):
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError("Gardemn n name must be a non-empty string.")
+        return value
 
 # CultivatedPlants
 class CultivatePlants(db.Model):
@@ -45,6 +63,22 @@ class CultivatePlants(db.Model):
     gardens = db.relationship("Garden", back_populates="cultivated")
     # Serialize rules
     serializer_rules = ('plants', 'gardens', '-plants.cultivated', '-gardens.cultivated')
+    # Validations
+    @validates("plant_id")
+    def validate_plant_id(self, key, value):
+        if not value: # Check for None value
+            raise ValueError("Plant id required")
+        if not db.session.get(Plant, value):  # Ensure plant exists
+            raise ValueError("Plant does not exist.")
+        return value
+    
+    @validates("garden_id")
+    def validate_garden_id(self, key, value):
+        if not value: # Check for None value
+            raise ValueError("Garden id required")
+        if not db.session.get(Garden, value):  # Ensure garden exists
+            raise ValueError("Garden does not exist.")
+        return value
 
 # Field Guide
 class FieldGuide(db.Model):
