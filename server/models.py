@@ -38,6 +38,7 @@ class Garden(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, default="Garden")
     #location = db.Column(db.String)
+    player_id = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)
     # Relationships
     cultivated = db.relationship("CultivatePlants", back_populates="gardens")
     player = db.relationship("Player", back_populates="gardens")
@@ -99,7 +100,6 @@ class Player(db.Model):
     # Columns
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, default="Player")
-    garden_id = db.Column(db.Integer, db.ForeignKey('gardens.id'), nullable=True)
     # Relationships
     gardens = db.relationship("Garden", back_populates="player")
     # Serializer rules
