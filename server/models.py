@@ -14,7 +14,7 @@ class Plant(db.Model):
     #type = db.Column(db.String)
     #rarity = db.Column(db.String)
     # Relationships
-    cultivated = db.relationship("CultivatedPlants", back_populates="plants")
+    cultivated = db.relationship("CultivatePlants", back_populates="plants")
     guide = db.relationship("FieldGuide", back_populates="plants")
     # Serialize rules
     serializer_rules = ('cultivated', 'guide', '-cultivated.plants', '-guide.plants')
@@ -39,7 +39,7 @@ class Garden(db.Model):
     name = db.Column(db.String, default="Garden")
     #location = db.Column(db.String)
     # Relationships
-    cultivated = db.relationship("CultivatedPlants", back_populates="gardens")
+    cultivated = db.relationship("CultivatePlants", back_populates="gardens")
     player = db.relationship("Player", back_populates="gardens")
     plants = association_proxy('cultivated-plants', 'plants') # hyphen?
     # Serialize rules
@@ -51,7 +51,7 @@ class Garden(db.Model):
             raise ValueError("Gardemn n name must be a non-empty string.")
         return value
 
-# CultivatedPlants
+# CultivatePlants
 # Tracks currently planted plants. Should delete relationship once harvested
 class CultivatePlants(db.Model):
     __tablename__="cultivated-plants"
@@ -86,8 +86,8 @@ class FieldGuide(db.Model):
     __tablename__="field-guide"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.Boolean, nullable=False, default="False") # default to false
-    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'), nullable=False)
+    status = db.Column(db.Boolean, nullable=False, default="False") # default to false, false is stored as 0, true is stored as 1
+    plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'), nullable=False, unique=True) # a plant can only show up once 
     # Relationships
     plants = db.relationship("Plant", back_populates="guide")
     # Serialize rules
