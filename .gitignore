@@ -10,8 +10,8 @@ venv/
 Pipfile.lock  
 
 # Flask-specific  
-instance/  
-*.db  
+#instance/  
+#*.db  
 *.sqlite3  
 
 # Database migrations (Alembic)  
