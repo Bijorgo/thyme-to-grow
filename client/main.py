@@ -2,6 +2,7 @@
 # Import Modules
 import os
 import pygame
+import requests
 
 # entry point for game
 # from documentation- line by line chimp :
@@ -12,13 +13,9 @@ import pygame
 pygame.init()
 
 # Create window, dimensions f window as a tuple
-# set_mode creates the "surface" - img for user to see
 screen = pygame.display.set_mode((640,640))
 
 # load imgs
-    # 'file path', .convert => converts img to format that matches the display surface's pixel format, also faser rendering
-    # an image is represented as a Surface, loaded from a file or created dynamically 
-    # alt: convert_alpga() => preserve transparancy if img has alpha layer
 character_img = pygame.image.load('charactersprite.png').convert_alpha()
 # Change img size by scale
 character_img = pygame.transform.scale( character_img,
@@ -26,19 +23,6 @@ character_img = pygame.transform.scale( character_img,
                                         character_img.get_height() *2
                                         ))
 
-# Color key to ignore while blitting: useful when not using alpha layer
-# change tuple to desired rgb key
-# character_img.set_colorkey((0,0,0))
-
-# alt pixelart rendering methods:
-# image.load -> transform.scale -> screen.blit
-    # scale first, smoothest, slowest
-# set_mode(dims, pygame.SCALED)
-    # scale last, optimized
-# image.load -> intermediate.blit -> transform.scale -> screen.blit
-    # scale last, more control, oder versison
-
-# you can blit 
 
 # Game loop
 running = True
@@ -63,9 +47,7 @@ while running:
     # Takes what we've put on the screen surface and displays on window
     pygame.display.flip() 
 
-    # desired frame rate, 60 pixels/second is generally fasted for most but not all displays
-    # returns time in ms
-    # more precise: time.time
+    # desired frame rate
     delta_time = clock.tick(60) / 1000
     delta_time = max(0.001, min(0.1, delta_time))
 
