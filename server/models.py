@@ -30,6 +30,15 @@ class Plant(db.Model):
         if not isinstance(value, int):
             raise ValueError("Level must be assigned integer")
         return value
+    
+    # to dict
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "level": self.level
+        }
+
 
 # Garden
 class Garden(db.Model):

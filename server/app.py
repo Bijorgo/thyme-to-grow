@@ -64,8 +64,10 @@ class FieldGuideResource(Resource):
         all_plants = FieldGuide.query.all()
         if not all_plants:
             return { "message": "Error: no plants in database" }, 404
-        plant_list = [{ "plant": plant.plants} for plant in all_plants]
+        
+        plant_list = [{ "plant": plant.plants.to_dict() } for plant in all_plants]
         return { "plants": plant_list}, 200
+    
     def patch(self):
         # toggle status found /not yet found
         pass
