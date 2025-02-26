@@ -23,6 +23,7 @@ logs/
 
 # Pygame assets (if large and not meant for version control)  
 #/client/assets/  
+/client/notes.py
 
 # IDE / Editor files  
 .vscode/  
