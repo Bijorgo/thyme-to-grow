@@ -30,19 +30,30 @@ x = 0
 clock = pygame.time.Clock()
 # Assists in frame rate for smooth 
 delta_time = 0.1
-
+# Gate movement for key events
+moving_right = False
 while running:
 
     # Fill background in green:(0, 255, 0)
     screen.fill((0, 255, 0))
 
     screen.blit(character_img, (x, 30))
-    x += 50 * delta_time
+    #x += 50 * delta_time
+
+    if moving_right:
+        x += 50 * delta_time
 
     # This allows game window to close
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        # Movement
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT: # check docs for available keys
+                moving_right = True
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_RIGHT:
+                moving_right = False
 
     # Takes what we've put on the screen surface and displays on window
     pygame.display.flip() 
