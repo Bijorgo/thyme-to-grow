@@ -7,13 +7,13 @@ from flask_restful import Resource, Api
 # Import models
 from models import Plant, Garden, CultivatePlants, FieldGuide, Player
 
-
 # Issues to come back to:
-    # properly serioalize relationships (ex cultivatedPlants=> plants and gardens)
+    # properly serialize relationships (ex cultivatedPlants=> plants and gardens)
     # .to_dict isnt turning yellow
     # validations 
     # specify parameters when patch and delete require an id to locate ( add this in api.add .... /players/<int:player_id>)
-    # lpayer not needing to be unique may be an issue
+    # player not needing to be unique may be an issue
+
 # Configs
 CORS(app, supports_credentials=True)
 api = Api(app)
@@ -75,7 +75,7 @@ class PlayerResource(Resource):
         if not players:
             return { "players": [] }
         player_list = [{ "name": player.name, "gardens": player.gardens} for player in players]
-        return{ "player": player_list}, 200
+        return{ "players": player_list}, 200
     
     def post(self):
         data = request.get_json()

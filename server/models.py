@@ -27,8 +27,8 @@ class Plant(db.Model):
     
     @validates("level")
     def validate_level(self, key, value):
-        if not isinstance(value, int) or not value.strip():
-            raise ValueError("Level must be assigned")
+        if not isinstance(value, int):
+            raise ValueError("Level must be assigned integer")
         return value
 
 # Garden
@@ -41,7 +41,7 @@ class Garden(db.Model):
     # Relationships
     cultivated = db.relationship("CultivatedPlants", back_populates="gardens")
     player = db.relationship("Player", back_populates="gardens")
-    plants = association_proxy('cultivated-plants', 'plants')
+    plants = association_proxy('cultivated-plants', 'plants') # hyphen?
     # Serialize rules
     serializer_rules = ('cultivated', 'player', '-cultivated.gardens', '-player.gardens')
     # Validations
@@ -86,7 +86,7 @@ class FieldGuide(db.Model):
     __tablename__="field-guide"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.Boolean, nullable=False, default="Not Yet Found") # default to false
+    status = db.Column(db.Boolean, nullable=False, default="False") # default to false
     plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'), nullable=False)
     # Relationships
     plants = db.relationship("Plant", back_populates="guide")
@@ -99,8 +99,8 @@ class Player(db.Model):
     # Columns
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, default="Player")
-    garden_id = db.Column(db.Integer, db.ForeignKey('gardens.id'), nullable=False)
+    garden_id = db.Column(db.Integer, db.ForeignKey('gardens.id'), nullable=True)
     # Relationships
     gardens = db.relationship("Garden", back_populates="player")
     # Serializer rules
-    serielaizer_rules = ('gardens', '-gardens.player')
+    serializer_rules = ('gardens', '-gardens.player')
