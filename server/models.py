@@ -39,18 +39,37 @@ class Garden(db.Model):
     name = db.Column(db.String, default="Garden")
     #location = db.Column(db.String)
     player_id = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=True)
+
     # Relationships
     cultivated = db.relationship("CultivatePlants", back_populates="gardens")
     player = db.relationship("Player", back_populates="gardens")
-    plants = association_proxy('cultivated-plants', 'plants') # hyphen?
+    plants = association_proxy('cultivated', 'plants')
+
     # Serialize rules
     serializer_rules = ('cultivated', 'player', '-cultivated.gardens', '-player.gardens')
+
     # Validations
     @validates("name")
     def validate_name(self, key, value):
         if not isinstance(value, str) or not value.strip():
-            raise ValueError("Gardemn n name must be a non-empty string.")
+            raise ValueError("Garden name must be a non-empty string.")
         return value
+    
+    # Method to serialize Garden to dictionary
+    def to_dict(self, exclude_fields=None):
+        exclude_fields = exclude_fields or []
+        garden_dict = {
+            "id": self.id,
+            "name": self.name,
+            "player_id": self.player_id,
+            "cultivated": [c.to_dict() for c in self.cultivated],
+            # Avoid calling player.to_dict()
+        }
+        for field in exclude_fields:
+            garden_dict.pop(field, None)
+
+        return garden_dict
+
 
 # CultivatePlants
 # Tracks currently planted plants. Should delete relationship once harvested
@@ -68,7 +87,7 @@ class CultivatePlants(db.Model):
     # Validations
     @validates("plant_id")
     def validate_plant_id(self, key, value):
-        if not value: # Check for None value
+        if value is None: # Check for None value
             raise ValueError("Plant id required")
         if not db.session.get(Plant, value):  # Ensure plant exists
             raise ValueError("Plant does not exist.")
@@ -87,7 +106,7 @@ class FieldGuide(db.Model):
     __tablename__="field-guide"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.Boolean, nullable=False, default="False") # default to false, false is stored as 0, true is stored as 1
+    status = db.Column(db.Boolean, nullable=False, default=False) # default to false, false is stored as 0, true is stored as 1
     plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'), nullable=False, unique=True) # a plant can only show up once 
     # Relationships
     plants = db.relationship("Plant", back_populates="guide")
@@ -104,3 +123,15 @@ class Player(db.Model):
     gardens = db.relationship("Garden", back_populates="player")
     # Serializer rules
     serializer_rules = ('gardens', '-gardens.player')
+    def to_dict(self, exclude_fields=None):
+        exclude_fields = exclude_fields or []
+        player_dict = {
+            "id": self.id,
+            "name": self.name,
+            "gardens": [garden.to_dict(exclude_fields=["player"]) for garden in self.gardens]  # Avoid player reference
+        }
+        for field in exclude_fields:
+            player_dict.pop(field, None)
+        
+        return player_dict
+
