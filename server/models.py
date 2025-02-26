@@ -52,6 +52,7 @@ class Garden(db.Model):
         return value
 
 # CultivatedPlants
+# Tracks currently planted plants. Should delete relationship once harvested
 class CultivatePlants(db.Model):
     __tablename__="cultivated-plants"
     # Columns
@@ -85,7 +86,7 @@ class FieldGuide(db.Model):
     __tablename__="field-guide"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.Boolean, nullable=False, default=False) # default to false
+    status = db.Column(db.Boolean, nullable=False, default="Not Yet Found") # default to false
     plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'), nullable=False)
     # Relationships
     plants = db.relationship("Plant", back_populates="guide")
