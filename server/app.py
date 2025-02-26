@@ -12,6 +12,7 @@ from models import Plant, Garden, CultivatePlants, FieldGuide, Player
     # properly serioalize relationships (ex cultivatedPlants=> plants and gardens)
     # .to_dict isnt turning yellow
     # validations 
+    # specify parameters when patch and delete require an id to locate ( add this in api.add .... /players/<int:player_id>)
 
 # Configs
 CORS(app, supports_credentials=True)
