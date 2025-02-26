@@ -3,10 +3,20 @@ from app import app, db
 from models import Plant, Garden, CultivatePlants, FieldGuide, Player
 
 def seed_plants():
-    pass
+    print("seeding plants...")
+    plants = [
+        Plant(name="Thyme", level=1),
+        Plant(name="Carrot", level=2),
+        Plant(name="Tulip", level=2)
+    ]
+
 
 def seed_gardens():
-    pass
+    gardens = [
+        Garden(name="Home"),
+        Garden(name="Farm"),
+        Garden(name="Moon Garden")
+    ]
 
 def seed_cultivated():
     pass
