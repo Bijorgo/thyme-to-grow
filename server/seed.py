@@ -17,9 +17,9 @@ def seed_plants():
 def seed_gardens():
     print("seeding gardens...")
     gardens = [
-        Garden(name="Home"),
-        Garden(name="Farm"),
-        Garden(name="Moon Garden")
+        #Garden(name="Home", player_id=None),
+        Garden(name="Farm", player_id=None),
+        Garden(name="Moon Garden", player_id=None)
     ]
     db.session.add_all(gardens)
     db.session.commit()
@@ -66,18 +66,30 @@ def seed_field_guide():
 
 def seed_players():
     print("seeding players...")
-    home_garden = Garden.query.filter_by(name="Home").first()
-    if not home_garden:
-        home_garden = Garden(name="Home")
-        db.session.add(home_garden)
-        db.session.comiit()
+    # Create players
     players=[
-        Player(name="Fern", garden_id=home_garden.id),
-        Player(name="Fernando", garden_id=home_garden.id)
+        Player(name="Fern"),
+        Player(name="Fernando")
     ]
-    db.session.add_all(players)
-    db.session.commit()
-    print(f"{len(players)} players seeded!")
+
+    for player in players:
+
+        db.session.add(player)
+        db.session.commit() # commit each player to db to create id
+
+        # Check if player has Home garden
+        home_garden = Garden.query.filter_by(name="Home", player_id=player.id).first()
+
+        # If not, create Home garden
+        if not home_garden:
+            home_garden = Garden(name="Home", player_id=player.id)
+            db.session.add(home_garden)
+            db.session.commit() # commit to save Home garden to db
+
+        # Assign Home garden to pleyer
+        player.garden_id = home_garden.id
+        db.session.commit()
+    print(f"{len(players)} players seeded with Home garden!")
 
 # Function to seed the database
 def seed_database():
