@@ -18,8 +18,27 @@ screen = pygame.display.set_mode((640,640))
 # load imgs
     # 'file path', .convert => converts img to format that matches the display surface's pixel format, also faser rendering
     # an image is represented as a Surface, loaded from a file or created dynamically 
-    # alt: convert_alpga() => preserve transparancy 
+    # alt: convert_alpga() => preserve transparancy if img has alpha layer
 character_img = pygame.image.load('charactersprite.png').convert_alpha()
+# Change img size by scale
+character_img = pygame.transform.scale( character_img,
+                                       (character_img.get_width() * 2,
+                                        character_img.get_height() *2
+                                        ))
+
+# Color key to ignore while blitting: useful when not using alpha layer
+# change tuple to desired rgb key
+# character_img.set_colorkey((0,0,0))
+
+# alt pixelart rendering methods:
+# image.load -> transform.scale -> screen.blit
+    # scale first, smoothest, slowest
+# set_mode(dims, pygame.SCALED)
+    # scale last, optimized
+# image.load -> intermediate.blit -> transform.scale -> screen.blit
+    # scale last, more control, oder versison
+
+# you can blit 
 
 # Game loop
 running = True
@@ -29,6 +48,9 @@ clock = pygame.time.Clock()
 delta_time = 0.1
 
 while running:
+
+    # Fill background in green:(0, 255, 0)
+    screen.fill((0, 255, 0))
 
     screen.blit(character_img, (x, 30))
     x += 50 * delta_time
