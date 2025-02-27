@@ -1,24 +1,23 @@
 import pygame
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BG_COLOR
 from src.player import Player
+from src.level import Level
 
 class Game:
     def __init__(self):
         pygame.init() # inits modules required to run (display, mixer, font, joystick, image, key, mouse)
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-            # top left = (0,0)
-            # middle = (960, 540) => x/2, y/2
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # top left = (0,0) middle = x/2, y/2
         pygame.display.set_caption("Thyme to Grow") # Set title in window bar
-        self.clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock() # Create game clock
         self.running = True
-        # Load player img
-        self.character_img = pygame.image.load("assets/charactersprite.png").convert_alpha()
-        # Scale img
+        self.level = Level()
+
+        # Create player with image
+        self.character_img = pygame.image.load("assets/charactersprite.png").convert_alpha() # load img
         self.character_img = pygame.transform.scale(self.character_img, 
-            (self.character_img.get_width() * 4, self.character_img.get_height() * 4)
+            (self.character_img.get_width() * 4, self.character_img.get_height() * 4) # Scale img
         )
-        # init player w img
-        self.player = Player(0, 320, self.character_img) # initial coordinates of Player + img
+        self.player = Player(0, 320, self.character_img) #init player w img, initial coordinates of Player
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -40,6 +39,8 @@ class Game:
             # Frame rate
             delta_time = self.clock.tick(60) / 1000 
             delta_time = max(0.001, min(0.1, delta_time))
+
+            self.level.run(delta_time) # before updating display, run level
 
             self.handle_events()  # Handle all events
             self.update(delta_time)  # Update game state (player movement)
