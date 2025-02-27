@@ -36,13 +36,13 @@ class Player:
     def move(self, delta_time):
         """Update player position based on movement flags."""
         if self.moving_right:
-            self.x += 50 * delta_time
+            self.x += 100 * delta_time
         if self.moving_left:
-            self.x -= 50 * delta_time
+            self.x -= 100 * delta_time
         if self.moving_down:
-            self.y += 50 * delta_time
+            self.y += 100 * delta_time
         if self.moving_up:
-            self.y -= 50 * delta_time
+            self.y -= 100 * delta_time
 
     def draw(self, screen):
         """Draw the player character on the screen."""
