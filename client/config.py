@@ -1,8 +1,8 @@
 # from pygame.math import Vector2
-SCREEN_WIDTH = 512
-SCREEN_HEIGHT = 512
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 1024
 FPS = 60
-BG_COLOR = (0, 255, 0)  # Green background
+BG_COLOR = (255, 255, 255)  # Black background
 
 # If player is holding a tool, use Vector2 to offset position
 

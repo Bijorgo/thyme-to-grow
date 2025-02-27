@@ -25,7 +25,7 @@ class Level:
         self.player = Player((640, 360), self.all_sprites)  # Pass position, group
 
     def run(self, delta_time):
-        self.display_surface.fill('green') # background
+        self.display_surface.fill('black') # background
         #self.all_sprites.draw(self.display_surface) # Draw sprites on screen
         self.all_sprites.custom_draw(self.player)
         self.all_sprites.update(delta_time)  # Update all sprites
