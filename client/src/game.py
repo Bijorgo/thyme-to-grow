@@ -8,7 +8,7 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
             # top left = (0,0)
             # middle = (960, 540) => x/2, y/2
-        pygame.display.set_caption("Thyme to Grow")
+        pygame.display.set_caption("Thyme to Grow") # Set title in window bar
         self.clock = pygame.time.Clock()
         self.running = True
         # Load player img

@@ -13,6 +13,7 @@ class Player:
 
     def handle_keys(self, event):
         """Handle key events to move the player."""
+        # Consider replacing movement with pygame.math => Vector 2
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
                 self.moving_right = True
