@@ -14,8 +14,6 @@ class Game:
 
     def run(self):
         while self.running:
-            
-
             for event in pygame.event.get():
                 # Allow window to close
                 if event.type == pygame.QUIT:
