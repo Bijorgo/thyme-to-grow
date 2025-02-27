@@ -13,11 +13,11 @@ class Game:
         self.level = Level()
 
         # Create player with image
-        self.character_img = pygame.image.load("assets/charactersprite.png").convert_alpha() # load img
-        self.character_img = pygame.transform.scale(self.character_img, 
-            (self.character_img.get_width() * 4, self.character_img.get_height() * 4) # Scale img
-        )
-        self.player = Player(0, 320, self.character_img) #init player w img, initial coordinates of Player
+        #self.character_img = pygame.image.load("assets/charactersprite.png").convert_alpha() # load img
+        #self.character_img = pygame.transform.scale(self.character_img, 
+            #(self.character_img.get_width() * 4, self.character_img.get_height() * 4) # Scale img
+        #)
+        #self.player = Player(0, 320, self.character_img) #init player w img, initial coordinates of Player
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -30,9 +30,10 @@ class Game:
         self.player.move(delta_time)  # Update player movement
         
     def draw(self):
-        self.screen.fill(BG_COLOR) # Fill BG
-        self.player.draw(self.screen) # Draw player on screen
-        pygame.display.flip() # Update display
+        #self.screen.fill(BG_COLOR) # Fill BG
+        #self.player.draw(self.screen) # Draw player on screen
+        #pygame.display.flip() # Update display
+        pass
 
     def run(self):
         while self.running:
@@ -42,7 +43,7 @@ class Game:
 
             self.level.run(delta_time) # before updating display, run level
 
-            self.handle_events()  # Handle all events
+            self.handle_events()  # Handle all events including exit
             self.update(delta_time)  # Update game state (player movement)
             self.draw()  # Draw everything to the screen
 
