@@ -2,10 +2,9 @@ import pygame
 from src.game import Game  # Import the Game class
 from src.objects import MainMenuButton
 
-pygame.init()
-
-# Create game instance, inits display ( must be before loading imgs )
-game = Game()
+if __name__ == '__main__':
+    game= Game () #Create game instance, inits display ( must be before loading imgs )
+    game.run()
 
 # Load button image
 main_menu_button_img = pygame.image.load('assets/menu-button.png').convert_alpha()

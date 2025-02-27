@@ -4,6 +4,7 @@ from src.player import Player
 
 class Game:
     def __init__(self):
+        pygame.init() # inits modules required to run (display, mixer, font, joystick, image, key, mouse)
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
             # top left = (0,0)
             # middle = (960, 540) => x/2, y/2
@@ -46,6 +47,3 @@ class Game:
 
         pygame.quit()
 
-#if __name__ == '__main__':
-    #game= Game ()
-    #game.run()
