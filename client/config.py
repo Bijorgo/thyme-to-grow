@@ -1,0 +1,4 @@
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
+FPS = 60
+BG_COLOR = (0, 255, 0)  # Green background
