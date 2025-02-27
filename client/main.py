@@ -13,7 +13,7 @@ import requests
 pygame.init()
 
 # Create window, dimensions f window as a tuple
-screen = pygame.display.set_mode((640,640))
+screen = pygame.display.set_mode((1920,1080))
     # top left = (0,0)
     # middle = (320, 320) => x/2, y/2
 
@@ -21,8 +21,8 @@ screen = pygame.display.set_mode((640,640))
 character_img = pygame.image.load('charactersprite.png').convert_alpha()
 # Change img size by scale
 character_img = pygame.transform.scale( character_img,
-                                       (character_img.get_width() * 2,
-                                        character_img.get_height() *2
+                                       (character_img.get_width() * 8,
+                                        character_img.get_height() * 8
                                         ))
 
 
@@ -48,13 +48,13 @@ while running:
     screen.blit(character_img, (x, y))
 
     if moving_right:
-        x += 50 * delta_time
+        x += 100 * delta_time
     if moving_left:
-        x -= 50 * delta_time
+        x -= 100 * delta_time
     if moving_down:
-        y += 50 * delta_time
+        y += 100 * delta_time
     if moving_up:
-        y -= 50 * delta_time
+        y -= 100 * delta_time
 
     # Allow game window to close
     for event in pygame.event.get():
