@@ -2,6 +2,7 @@ import pygame
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BG_COLOR
 from src.player import Player
 from src.level import Level
+from src.menu import MenuPage
 
 class Game:
     def __init__(self):
@@ -11,6 +12,9 @@ class Game:
         self.clock = pygame.time.Clock() # Create game clock
         self.running = True
         self.level = Level()
+        self.menu = MenuPage()
+        self.in_menu = True
+        self.in_game = False
 
     def run(self):
         while self.running:
@@ -21,7 +25,11 @@ class Game:
             # Frame rate
             delta_time = self.clock.tick(60) / 1000 
             delta_time = max(0.001, min(0.1, delta_time))
-            self.level.run(delta_time) # before updating display, run level
+
+            if self.in_menu:
+                self.menu.run(delta_time)  # Run the menu
+            else:
+                self.level.run(delta_time)  # Run the level/gameplay
             pygame.display.update()
 
         pygame.quit()

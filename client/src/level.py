@@ -1,7 +1,7 @@
 import pygame
 from config import *
 from src.player import Player
-from src.sprites import Generic
+from src.sprites import Generic, Menu
 from src.fetching import *
 
 class Level:
@@ -12,7 +12,6 @@ class Level:
         # Sprite groups
         self.all_sprites = CameraGroup()
         self.collision_sprites = pygame.sprite.Group()
-
         # Setup player
         self.setup()
 
@@ -27,6 +26,7 @@ class Level:
 
         # Fetch players from API
         player_data = get_players()
+
 
         # Create player instance and add to the all_sprites group
         #self.player = Player((640, 360), self.all_sprites)  # Pass position, group
