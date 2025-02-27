@@ -15,15 +15,20 @@ pygame.init()
 # Create window, dimensions f window as a tuple
 screen = pygame.display.set_mode((1920,1080))
     # top left = (0,0)
-    # middle = (320, 320) => x/2, y/2
+    # middle = (960, 540) => x/2, y/2
 
 # load imgs
 character_img = pygame.image.load('charactersprite.png').convert_alpha()
+main_menu_button = pygame.image.load('menu-button.png').convert_alpha()
+
 # Change img size by scale
 character_img = pygame.transform.scale( character_img,
                                        (character_img.get_width() * 8,
                                         character_img.get_height() * 8
                                         ))
+main_menu_button = pygame.transform.scale( main_menu_button,
+                                          (main_menu_button.get_width() * 4,
+                                           main_menu_button.get_height() * 4))
 
 
 # Game loop
@@ -46,6 +51,7 @@ while running:
     screen.fill((0, 255, 0))
 
     screen.blit(character_img, (x, y))
+    screen.blit(main_menu_button, (0, 0))
 
     if moving_right:
         x += 100 * delta_time
