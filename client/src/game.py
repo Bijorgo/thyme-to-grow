@@ -19,15 +19,15 @@ class Game:
         #)
         #self.player = Player(0, 320, self.character_img) #init player w img, initial coordinates of Player
 
-    def handle_events(self):
-        for event in pygame.event.get():
+    #def handle_events(self):
+        #for event in pygame.event.get():
             # Allow window to close
-            if event.type == pygame.QUIT:
-                self.running = False
-            self.player.handle_keys(event)  # Handle player movement
+            #if event.type == pygame.QUIT:
+                #self.running = False
+            #self.player.handle_keys(event)  # Handle player movement
 
-    def update(self, delta_time):
-        self.player.move(delta_time)  # Update player movement
+    #def update(self, delta_time):
+        #self.player.move(delta_time)  # Update player movement
         
     def draw(self):
         #self.screen.fill(BG_COLOR) # Fill BG
@@ -37,15 +37,21 @@ class Game:
 
     def run(self):
         while self.running:
+            
+
+            for event in pygame.event.get():
+                # Allow window to close
+                if event.type == pygame.QUIT:
+                    self.running = False
             # Frame rate
             delta_time = self.clock.tick(60) / 1000 
             delta_time = max(0.001, min(0.1, delta_time))
-
             self.level.run(delta_time) # before updating display, run level
+            pygame.display.update()
 
-            self.handle_events()  # Handle all events including exit
-            self.update(delta_time)  # Update game state (player movement)
-            self.draw()  # Draw everything to the screen
+            #self.handle_events()  # Handle all events including exit
+            #self.update(delta_time)  # Update game state (player movement)
+            #self.draw()  # Draw everything to the screen
 
         pygame.quit()
 
