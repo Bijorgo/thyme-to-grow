@@ -1,7 +1,13 @@
 # from pygame.math import Vector2
-SCREEN_WIDTH = 1920
-SCREEN_HEIGHT = 1080
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 1024
 FPS = 60
-BG_COLOR = (0, 255, 0)  # Green background
+BG_COLOR = (255, 255, 255)  # Black background
 
 # If player is holding a tool, use Vector2 to offset position
+
+LAYERS = {
+    'water' : 0,
+    'ground': 1,
+    'main': 3
+}
