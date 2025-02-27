@@ -10,6 +10,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.Surface((32, 64)) # for testing
         self.image.fill('black') # for testing
         self.rect = self.image.get_rect( center = pos )  # Set rect with position
+        self.hitbox = self.rect.copy().inflate((-2, -2)) # takes rect and changes dimentions around center
         self.z = LAYERS['main'] # Refers to layer in config, ref x, y, z pos
 
         # movement
@@ -42,10 +43,13 @@ class Player(pygame.sprite.Sprite):
 
         # Horizontal movement
         self.pos.x += self.direction.x * self.speed * delta_time
-        self.rect.centerx = self.pos.x
+        self.hitbox.centerx = round(self.pos.x)
+        self.rect.centerx = self.hitbox.centerx
+
         # Vertical movement 
         self.pos.y += self.direction.y * self.speed * delta_time
-        self.rect.centery = self.pos.y
+        self.hitbox.centery = round(self.pos.y)
+        self.rect.centery = self.hitbox.centery
 
 
     def update(self, delta_time):
