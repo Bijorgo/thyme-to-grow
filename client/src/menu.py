@@ -66,6 +66,7 @@ class MenuPage:
         except requests.exceptions.RequestException as e:
             print(f"ERROR: Request failed for /gardens/{garden_id}. Exception: {e}")
 
+    # Game loop
     def run(self):
         while self.running:
             self.display_surface.fill('black')

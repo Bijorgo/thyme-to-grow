@@ -31,32 +31,35 @@ class Level:
                     group=[self.all_sprites, self.collision_sprites],
                     name=player_info["name"]
                 ))
+            self.load_plants()
 
-    def run(self):
-        while self.running:
-            self.display_surface.fill('black')
-            delta_time = max(0.001, min(0.1, pygame.time.Clock().tick(60) / 1000))
+    # Retrieve the already planted plants 
+    def load_plants(self):
+        url = f"http://127.0.0.1:5000/cultivated-plants"
+        response = requests.get(url)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
+        if response.status_code == 200:
+            cultivated_plants = response.json().get("cultivated-plants", []) # Debug => use .get returns default(empty list) instead of error
+            print(f"DEBUG: Loaded plants: {cultivated_plants}")
 
-                # Trigger planting by pressing p
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                    self.plant_seed()
+            for plant_data in cultivated_plants:
+                plant_info = plant_data["plant"]
+                x, y = plant_data["x"], plant_data["y"]  # Load position
 
-            # Draw all sprites
-            if self.players:
-                player = self.players[0]
-                self.all_sprites.custom_draw(player)
-                self.all_sprites.update(delta_time)
+                # Create plant sprite
+                plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()
+                new_plant = Plants(
+                    pos=(x, y),
+                    surface=plant_surface,
+                    groups=[self.all_sprites, self.plants],  # Add to sprite groups
+                    z=LAYERS['main']
+                )
 
-            # Draw the plants
-            #self.plants.update(delta_time)  # Update all plant sprites
-            #self.plants.draw(self.display_surface)  # Draw all plant sprites
+                print(f"DEBUG: Planted {plant_info['name']} at ({x}, {y})")
 
-            pygame.display.update()
+        else:
+            print("DEBUG: Error fetching planted flowers:", response.text)
+            
 
     def plant_seed(self):
         print(f"DEBUG: attempting to plant seed in garden {self.selected_garden['id']}") # Debug
@@ -72,11 +75,17 @@ class Level:
         plant = random.choice(plants)  # Choose a random plant
         plant_id = plant["id"]  # Store id
 
+        # Determine position: used for persisting plants
+        player = self.players[0]
+        plant_pos = (player.rect.centerx - 32, player.rect.centery - 32) # Adjust for center of plant img, Debug these nubers?
+
         # POST request data
         data ={
             "player_id": self.selected_player['id'],
             "garden_id": self.selected_garden['id'],
-            "plant_id": plant_id 
+            "plant_id": plant_id,
+            "x" : plant_pos[0],
+            "y" : plant_pos[1]
         }
         
         # Endpoint for POST request
@@ -90,7 +99,7 @@ class Level:
 
             # position plant based on player position
             player = self.players[0] 
-            plant_pos = (player.rect.centerx - 32, player.rect.centery - 32) # adjust for center of plant img
+            plant_pos = (player.rect.centerx - 32, player.rect.centery - 32) # this should be the same as plant_pos line
 
             # Create new plant sprite, add tp plant sprite group
             plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()  # Load plant image
@@ -104,6 +113,37 @@ class Level:
         else:
             print(f"DEBUG: Error planting seed: {response.text}")
 
+    # Game loop                
+    def run(self):
+            while self.running:
+                self.display_surface.fill('black')
+                delta_time = max(0.001, min(0.1, pygame.time.Clock().tick(60) / 1000))
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+
+                    # Trigger planting by pressing p
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                        self.plant_seed()
+
+                # Draw all sprites
+                if self.players:
+                    player = self.players[0]
+                    self.all_sprites.custom_draw(player)
+                    self.all_sprites.update(delta_time)
+
+                # Draw the plants
+                #self.plants.update(delta_time)  # Update all plant sprites
+                #self.plants.draw(self.display_surface)  # Draw all plant sprites
+
+                pygame.display.update()
+
+
+
+
+# Consider moving this somewhere else?
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
@@ -120,3 +160,5 @@ class CameraGroup(pygame.sprite.Group):
                     offset_rect = sprite.rect.copy()
                     offset_rect.center -= self.offset
                     self.display_surface.blit(sprite.image, offset_rect)
+
+    
