@@ -1,16 +1,17 @@
 # src/fetching.py
 import requests
 
-BASE_URL = "http://127.0.0.1:5000" 
+#BASE_URL = "http://127.0.0.1:5000" 
 
-ENDPOINTS = [
-    "/plants",
-    "/gardens",
-    "/cultivated-plants",
-    "/field-guide",
-    "/player"
-]
+#ENDPOINTS = [
+#    "/plants",
+#    "/gardens",
+#    "/cultivated-plants",
+#    "/field-guide",
+#    "/player"
+#]
 
+# ACTIVE IN LEVEL
 def get_players():
     try:
         response = requests.get('http://127.0.0.1:5000/player')
@@ -19,10 +20,10 @@ def get_players():
     except requests.exceptions.RequestException as exc:
         print(f"error fetching{exc}")
         return []
-    
+
+# aCTIVE IN LEVEL
 def get_plants():
-    url = "http://127.0.0.1:5000/plants"
-    response = requests.get(url)
+    response = requests.get("http://127.0.0.1:5000/plants")
     
     if response.status_code == 200:
         return response.json()["plants"] # Need to return a list 
