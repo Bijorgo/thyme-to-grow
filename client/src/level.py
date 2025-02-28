@@ -143,7 +143,8 @@ class Level:
             plant_obj = cultivate_plant['plant']
             garden_obj = cultivate_plant['garden']
             cultivated_plant_id = cultivate_plant['id']
-            #print(f"DEBUG: Harvesting plant {plant_obj['name']} (ID: {plant_obj['id']}) from garden {garden_obj['name']} (ID: {garden_obj['id']}) CP ID: {id}")
+            print(f"DEBUG: Harvesting plant ID = {cultivated_plant_id}")  # debug
+
 
             # DELETE fetch request
             response = requests.delete(f"http://127.0.0.1:5000/cultivated-plants/{cultivated_plant_id}")
