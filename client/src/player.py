@@ -1,9 +1,10 @@
 # player.py
 import pygame
 from config import *
+from src.fetching import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group): 
+    def __init__(self, pos, group, name="Player"): 
         super().__init__(group)
 
         # Set up sprite img and rect
@@ -11,6 +12,12 @@ class Player(pygame.sprite.Sprite):
         self.image.fill('black') # for testing
         self.rect = self.image.get_rect( center = pos )  # Set rect with position
         self.z = LAYERS['main'] # Refers to layer in config, ref x, y, z pos
+
+        # player attributes
+        self.name = name 
+        self.font = pygame.font.Font(None, 24)  # Font for displaying names
+        self.text_surface = self.font.render(self.name, True, (255, 255, 255))  # Render text in white
+        self.text_rect = self.text_surface.get_rect(center=(self.rect.centerx, self.rect.top - 10)) #position name above player  # Position text
 
         # movement
         self.direction = pygame.math.Vector2() # default () = (0,0)
@@ -47,10 +54,12 @@ class Player(pygame.sprite.Sprite):
         self.pos.y += self.direction.y * self.speed * delta_time
         self.rect.centery = self.pos.y
 
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)  # Draw the player sprite
+        surface.blit(self.text_surface, self.text_rect)  # Draw the player's name above the player
+
 
     def update(self, delta_time):
         self.input()
         self.move(delta_time)
  
-
-       
