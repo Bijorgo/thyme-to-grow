@@ -1,8 +1,8 @@
-import pygame
+import pygame, random
 from config import *
 from src.player import Player
 from src.sprites import Generic, Plants
-from src.fetching import get_players
+from src.fetching import get_players, get_plants
 import requests
 
 class Level:
@@ -24,7 +24,7 @@ class Level:
             self.background = Generic((0, 0), pygame.image.load('src/assets/bg2.png').convert_alpha(),
                                       self.all_sprites, LAYERS['ground'])
 
-            player_data = get_players()
+            player_data = get_players() # Make the get request, function from fetching.py
             for i, player_info in enumerate(player_data["players"]):
                 self.players.append(Player(
                     pos=(640, 360 + i * 50),
@@ -61,21 +61,32 @@ class Level:
     def plant_seed(self):
         print(f"DEBUG: attempting to plant seed in garden {self.selected_garden['id']}") # Debug
 
-        # Endpoint for POST request
-        url = "http://127.0.0.1:5000/cultivated-plants"
+        # Fetch plants from API
+        plants = get_plants() # Fetch function in fetching.py
+
+        if not plants:
+            print("DEBUG: No available plants (written from level)")
+            return
+        
+        # Select a random plant
+        plant = random.choice(plants)  # Choose a random plant
+        plant_id = plant["id"]  # Store id
 
         # POST request data
         data ={
             "player_id": self.selected_player['id'],
             "garden_id": self.selected_garden['id'],
-            "plant_id": 1 #plant_id # Adjust to be dynamic later
+            "plant_id": plant_id 
         }
+        
+        # Endpoint for POST request
+        url = "http://127.0.0.1:5000/cultivated-plants"
 
         # Send the POST request to the API
         response = requests.post(url, json=data)
         
         if response.status_code == 201:
-            print("DEBUG: Seed planted successfully!")
+            print(f"DEBUG: Seed planted successfully! (Plant id {plant_id})")
 
             # position plant based on player position
             player = self.players[0] 

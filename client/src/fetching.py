@@ -1,5 +1,4 @@
 # src/fetching.py
-
 import requests
 
 BASE_URL = "http://127.0.0.1:5000" 
@@ -22,12 +21,13 @@ def get_players():
         return []
     
 def get_plants():
-    try:
-        response = requests.get('http://127.0.0.1:5000/plants')
-        response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
-        return response.json()  # Return JSON response
-    except requests.exceptions.RequestException as exc:
-        print(f"error fetching{exc}")
+    url = "http://127.0.0.1:5000/plants"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        return response.json()["plants"] # Need to return a list 
+    else:
+        print("Error fetching plants:", response.text)
         return []
     
 def get_gardens():
