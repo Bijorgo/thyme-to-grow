@@ -24,7 +24,7 @@ class Level:
             self.background = Generic((0, 0), pygame.image.load('src/assets/bg2.png').convert_alpha(),
                                       self.all_sprites, LAYERS['ground'])
 
-            player_data = get_players()
+            player_data = get_players() # Make the get request, function from fetching.py
             for i, player_info in enumerate(player_data["players"]):
                 self.players.append(Player(
                     pos=(640, 360 + i * 50),

@@ -24,7 +24,11 @@ class MenuPage:
             self.buttons.append(Button(
                 pos=(100, 100 + i * 60), width=200, height=50,
                 text=f"Player {player['name']}",
-                action=lambda player=player: self.show_gardens(player)
+                action=lambda player=player: self.show_gardens(player) 
+                # lambda captures player and 
+                    # delays execution of self.show_gardens(player) until after button is clicked 
+                # player = player ensures button "remembers" the player it was created with
+                    # rather than the last player of the loop
             ))
 
     def show_gardens(self, player):
