@@ -5,14 +5,16 @@ from src.sprites import Generic
 from src.fetching import get_players
 
 class Level:
-    def __init__(self, selected_player=None):
+    def __init__(self, selected_player=None, selected_garden=None):
         self.display_surface = pygame.display.get_surface()
         self.all_sprites = CameraGroup()
         self.collision_sprites = pygame.sprite.Group()
         self.selected_player = selected_player
+        self.selected_garden = selected_garden
         self.players = []
         self.running = True
         self.setup()
+        print(f"Level initialized with player {selected_player} and garden {selected_garden}") # debug
 
     def setup(self):
         if self.selected_player:

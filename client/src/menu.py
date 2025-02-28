@@ -4,6 +4,7 @@ from src.sprites import Menu
 from src.fetching import get_players
 from src.buttons import Button
 from src.level import Level
+import requests
 
 class MenuPage:
     def __init__(self):
@@ -36,10 +37,30 @@ class MenuPage:
         ]
 
     def run_game(self, garden):
-        print(f"Launching game for Garden: {garden['name']}")
-        level = Level(self.selected_player)
-        level.run()  # Switch to level loop
-        self.running = False  # Exit menu loop
+        garden_id = garden.get("id")  # Ensure garden has an ID
+        print(f"DEBUG: Running game for garden ID {garden_id}")  # Debugging
+
+        try:
+            # Fetch garden from API
+            response = requests.get(f"http://127.0.0.1:5000/gardens/{garden_id}")
+            print(f"DEBUG: Response status = {response.status_code}, text = {response.text}")  # Debugging
+
+            if response.status_code == 200:
+                selected_garden = response.json()
+                print(f"DEBUG: Fetched Garden: {selected_garden}")  # Debugging
+
+                level = Level(self.selected_player, selected_garden)  # Pass garden to level
+                level.run()  # Switch to level loop
+                self.running = False  # Exit menu loop
+
+            else:
+                print(f"ERROR: Failed to fetch garden ID {garden_id}. Status {response.status_code}, Response: {response.text}")
+
+        except requests.exceptions.JSONDecodeError:
+            print(f"ERROR: JSON decoding failed for response from /gardens/{garden_id}. Raw text: {response.text}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"ERROR: Request failed for /gardens/{garden_id}. Exception: {e}")
 
     def run(self):
         while self.running:
