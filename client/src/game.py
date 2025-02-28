@@ -11,8 +11,10 @@ class Game:
         pygame.display.set_caption("Thyme to Grow") # Set title in window bar
         self.clock = pygame.time.Clock() # Create game clock
         self.running = True
+        # inits
         self.level = Level()
         self.menu = MenuPage()
+
         self.in_menu = True
         self.in_game = False
 
@@ -22,14 +24,24 @@ class Game:
                 # Allow window to close
                 if event.type == pygame.QUIT:
                     self.running = False
+
             # Frame rate
             delta_time = self.clock.tick(60) / 1000 
             delta_time = max(0.001, min(0.1, delta_time))
 
+            # Run menu or level depending on state
             if self.in_menu:
-                self.menu.run(delta_time)  # Run the menu
-            else:
-                self.level.run(delta_time)  # Run the level/gameplay
+                self.menu.run(delta_time)
+                if self.menu.in_game:  # Transition from menu to game
+                    self.in_menu = False
+                    self.in_game = True
+                    if len(self.level.players) > 0:  # Only start the game if players are available
+                        print("Starting game...")
+                    else:
+                        print("Players not ready yet, waiting...")
+            elif self.in_game:
+                self.level.run(delta_time)
+
             pygame.display.update()
 
         pygame.quit()

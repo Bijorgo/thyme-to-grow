@@ -4,6 +4,7 @@ from src.player import Player
 from src.sprites import Menu
 from src.fetching import *
 from src.buttons import Button
+from src.level import Level
 
 class MenuPage:
     def __init__(self):
@@ -46,13 +47,19 @@ class MenuPage:
                 pos=(500, 200 + len(self.garden_buttons) * 60),
                 width=200, height=50,
                 text=f"Garden {garden['name']}",
-                action=lambda garden=garden: self.show_garden_details(garden)  # Show details of the selected garden
+                action=lambda garden=garden: self.launch_game(garden)  # Launch game after clicked 
             )
             self.garden_buttons.append(garden_button)
 
     def show_garden_details(self, garden):
-        # Print the garden details 
+        # Print the garden details, mostly for debugging
         print(f"Showing details for Garden: {garden['name']}")
+
+    def launch_game(self, garden):
+        # This method will be called when a garden button is clicked
+        print(f"Launching game for Garden: {garden['name']}")  # debug
+        self.in_game = True  # Set flag to indicate game is ready to start
+        self.level = Level(selected_player=self.selected_player)  # Pass selected player
 
     def run(self, delta_time):
         self.display_surface.fill('black')  # Background
