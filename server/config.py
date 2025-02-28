@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.exc import IntegrityError
+#from flask_restful import Api, Resource
 
 # init flask
 app = Flask(__name__)

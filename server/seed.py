@@ -18,8 +18,8 @@ def seed_gardens():
     print("seeding gardens...")
     gardens = [
         #Garden(name="Home", player_id=None),
-        Garden(name="Farm", player_id=None),
-        Garden(name="Moon Garden", player_id=None)
+        Garden(name="Farm", player_id=1),
+        Garden(name="Moon Garden", player_id=1)
     ]
     db.session.add_all(gardens)
     db.session.commit()
@@ -39,11 +39,11 @@ def seed_cultivated():
         return
     cultivated_entries = []
     # assign every plant to every garden, tested and works
-    #for garden in gardens_from_db:
-    #    for plant in plants_from_db: # both a garden id and plant id are required to create an entry
-    #        cultivated_entries.append(CultivatePlants(plant_id=plant.id, garden_id=garden.id))
-    #db.session.add_all(cultivated_entries)
-    #db.session.commit()
+    for garden in gardens_from_db:
+        for plant in plants_from_db: # both a garden id and plant id are required to create an entry
+            cultivated_entries.append(CultivatePlants(plant_id=plant.id, garden_id=garden.id))
+    db.session.add_all(cultivated_entries)
+    db.session.commit()
     print(f"{len(cultivated_entries)} entries seeded!")
 
 def seed_field_guide():
