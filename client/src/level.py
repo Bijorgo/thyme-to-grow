@@ -35,8 +35,7 @@ class Level:
 
     # Retrieve the already planted plants 
     def load_plants(self):
-        url = f"http://127.0.0.1:5000/cultivated-plants"
-        response = requests.get(url)
+        response = requests.get("http://127.0.0.1:5000/cultivated-plants")
 
         if response.status_code == 200:
             cultivated_plants = response.json().get("cultivated-plants", []) # Debug => use .get returns default(empty list) instead of error
@@ -52,7 +51,8 @@ class Level:
                     pos=(x, y),
                     surface=plant_surface,
                     groups=[self.all_sprites, self.plants],  # Add to sprite groups
-                    z=LAYERS['main']
+                    z=LAYERS['main'],
+                    cultivate_plants=plant_data
                 )
 
                 print(f"DEBUG: Planted {plant_info['name']} at ({x}, {y})")
@@ -85,7 +85,8 @@ class Level:
             "garden_id": self.selected_garden['id'],
             "plant_id": plant_id,
             "x" : plant_pos[0],
-            "y" : plant_pos[1]
+            "y" : plant_pos[1],
+
         }
         
         # Endpoint for POST request
@@ -97,22 +98,66 @@ class Level:
         if response.status_code == 201:
             print(f"DEBUG: Seed planted successfully! (Plant id {plant_id})")
 
+            # Print response JSON for debugging
+            try:
+                cultivate_plant = response.json()  # Get the JSON response
+                print(f"DEBUG: API Response: {cultivate_plant}")  # Debugging step
+            except Exception as exc:
+                print(f"DEBUG: Failed to parse JSON response - {exc}")
+                return
+            
+            # Ensure cultivate_plant is correctly structured and accessible
+            if not isinstance(cultivate_plant, dict) or 'id' not in cultivate_plant:
+                print("DEBUG: Cultivate plant object missing or invalid.")
+                return
+
             # position plant based on player position
-            player = self.players[0] 
-            plant_pos = (player.rect.centerx - 32, player.rect.centery - 32) # this should be the same as plant_pos line
+            #player = self.players[0] 
+            #plant_pos = (player.rect.centerx - 32, player.rect.centery - 32) # this should be the same as plant_pos line
 
             # Create new plant sprite, add tp plant sprite group
             plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()  # Load plant image
+            # init plant sprite
             new_plant = Plants(
                 pos = plant_pos, 
                 surface = plant_surface, 
                 groups = [self.all_sprites, self.plants], # Add to both all_sprites and plants group
-                z = LAYERS['main'] # Add to ain layer
+                z = LAYERS['main'], # Add to main layer
+                cultivate_plants = cultivate_plant
             )  
             print(f"DEBUG: New plant created at {plant_pos}") # debug
         else:
             print(f"DEBUG: Error planting seed: {response.text}")
 
+    def harvest_seeds(self, plant):
+        # Handle no plants
+        #if not self.plants:
+        #    print("DEBUG: No plants to harvest")
+        #    return
+        
+        # Access cultivate plants object from sprite
+        cultivate_plant = plant.cultivate_plants_obj
+
+        if cultivate_plant:
+            # Access related Plant and Garden
+            plant_obj = cultivate_plant['plant']
+            garden_obj = cultivate_plant['garden']
+            cultivated_plant_id = cultivate_plant['id']
+            #print(f"DEBUG: Harvesting plant {plant_obj['name']} (ID: {plant_obj['id']}) from garden {garden_obj['name']} (ID: {garden_obj['id']}) CP ID: {id}")
+
+            # DELETE fetch request
+            response = requests.delete(f"http://127.0.0.1:5000/cultivated-plants/{cultivated_plant_id}")
+
+            if response.status_code == 200:
+                print(f"DEBUG: Plant harvested and removed from the database")
+                # Remove the plant sprite from the sprite groups
+                self.plants.remove(plant)  # Remove from the plants sprite group
+                self.all_sprites.remove(plant)  # Remove from all_sprites group
+                del plant # Delete image
+                print(f"DEBUG: Plant removed from the UI")
+            else:
+                print(f"DEBUG: Error harvesting plant ") #{response.text}
+                
     # Game loop                
     def run(self):
             while self.running:
@@ -123,6 +168,14 @@ class Level:
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         exit()
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_h:
+                            player = self.players[0]
+                            for plant in self.plants: # check for all sprites
+                                if player.rect.colliderect(plant.rect): # Check if player is near plant
+                                    self.harvest_seeds(plant) # Call harvest function
+                                    break
+                    
 
                     # Trigger planting by pressing p
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
