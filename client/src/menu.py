@@ -53,6 +53,10 @@ class MenuPage:
                 selected_garden = response.json()
                 print(f"DEBUG: Fetched Garden: {selected_garden}")  # Debugging
 
+                pygame.event.clear() # Clear lingering events
+                self.running=False # Stop menu loop
+                
+                # Create new level with clean state
                 level = Level(self.selected_player, selected_garden)  # Pass garden to level
                 level.run()  # Switch to level loop
                 self.running = False  # Exit menu loop

@@ -15,10 +15,10 @@ class Button:
         surface.blit(self.text_surface, self.text_rect)  # Draw the text
 
     def is_clicked(self, mouse_pos):
-        print("CLICK!") # debug
+        print("CLICK! from buttons.py") # debug
         return self.rect.collidepoint(mouse_pos)  # Check if mouse clicks inside the button
 
     def click(self):
         if self.action:
-            print(f"Button '{self.text}' clicked") # debug 
+            print(f"Button '{self.text}' clicked from buttons.py") # debug 
             self.action()  # Call the button's action if defined

@@ -35,6 +35,11 @@ class Level:
 
     # Retrieve the already planted plants 
     def load_plants(self):
+        # ✅ Step 1: Remove ONLY plant sprites (not the player)
+        for sprite in self.plants:
+            self.all_sprites.remove(sprite)  # Remove plant from all_sprites
+        self.plants.empty()  # Clears plant group only
+            
         response = requests.get("http://127.0.0.1:5000/cultivated-plants")
 
         if response.status_code == 200:
