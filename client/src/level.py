@@ -65,9 +65,14 @@ class Level:
                 if garden_obj['id'] == self.selected_garden['id']:
                     # Create plant sprite
                     plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()
+                    # Resize img
+                    new_width = plant_surface.get_width() * 2  # Example: doubling the size
+                    new_height = plant_surface.get_height() * 2
+                    resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
+                    # init plant sprite
                     new_plant = Plants(
                         pos=(x, y),
-                        surface=plant_surface,
+                        surface=resized_plant,
                         groups=[self.all_sprites, self.plants],  # Add to sprite groups
                         z=LAYERS['main'],
                         cultivate_plants=one_plant
@@ -135,10 +140,14 @@ class Level:
 
             # Create new plant sprite, add tp plant sprite group
             plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()  # Load plant image
+            # Resize img
+            new_width = plant_surface.get_width() * 2  # Example: doubling the size
+            new_height = plant_surface.get_height() * 2
+            resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
             # init plant sprite
             new_plant = Plants(
                 pos = plant_pos, 
-                surface = plant_surface, 
+                surface = resized_plant, 
                 groups = [self.all_sprites, self.plants], # Add to both all_sprites and plants group
                 z = LAYERS['main'], # Add to main layer
                 cultivate_plants = cultivate_plant

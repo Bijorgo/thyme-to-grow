@@ -21,5 +21,5 @@ class Plants(pygame.sprite.Sprite):
         self.image = surface
         self.rect = self.image.get_rect(topleft = pos)
         self.z = z
-        self.image.fill((255, 0, 0))  # Green square for the plant for testing
+        #self.image.fill((255, 0, 0))  # Green square for the plant for testing
         self.cultivate_plants_obj = cultivate_plants # Store cultivate plant object 
