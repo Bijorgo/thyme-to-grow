@@ -35,7 +35,7 @@ class Level:
 
     # Retrieve the already planted plants 
     def load_plants(self):
-        # ✅ Step 1: Remove ONLY plant sprites (not the player)
+        # DEBUG THIS
         for sprite in self.plants:
             self.all_sprites.remove(sprite)  # Remove plant from all_sprites
         self.plants.empty()  # Clears plant group only
