@@ -19,11 +19,16 @@ class Level:
         print(f"Level initialized with player {selected_player} and garden {selected_garden}") # debug
 
     def setup(self):
-        if self.selected_player:
-            print(f"Player {self.selected_player['name']}, creating level")
+        # Check for given player / garden combo
+        if self.selected_garden and self.selected_garden:
+            print(f"Player {self.selected_player['name']}, garden {self.selected_garden['name']}, garden id {self.selected_garden['id']} creating level") # debug
+
+            # Set background => this will need to change for unique backgrounds per level
+            # All garden backgrounds are currently generic (found in sprites.py)
             self.background = Generic((0, 0), pygame.image.load('src/assets/bg2.png').convert_alpha(),
                                       self.all_sprites, LAYERS['ground'])
-
+            
+            # Create player sprite
             player_data = get_players() # Make the get request, function from fetching.py
             for i, player_info in enumerate(player_data["players"]):
                 self.players.append(Player(
@@ -35,32 +40,40 @@ class Level:
 
     # Retrieve the already planted plants 
     def load_plants(self):
-        # DEBUG THIS
-        for sprite in self.plants:
-            self.all_sprites.remove(sprite)  # Remove plant from all_sprites
-        self.plants.empty()  # Clears plant group only
+        # DEBUG THIS FUNCTION
+        # Need to retrieve plants by garden id? not all cultivated plants
+        #for sprite in self.plants:
+         #   self.all_sprites.remove(sprite)  # Remove plant from all_sprites
+        #self.plants.empty()  # Clears plant group only
             
-        response = requests.get("http://127.0.0.1:5000/cultivated-plants")
+        response = requests.get("http://127.0.0.1:5000/cultivated-plants") #GET
 
         if response.status_code == 200:
-            cultivated_plants = response.json().get("cultivated-plants", []) # Debug => use .get returns default(empty list) instead of error
-            print(f"DEBUG: Loaded plants: {cultivated_plants}")
+            all_currently_planted = response.json().get("cultivated-plants", []) # Debug => use .get returns default(empty list) instead of error
+            print(f"DEBUG: Loaded plants: {all_currently_planted}")
 
-            for plant_data in cultivated_plants:
-                plant_info = plant_data["plant"]
-                x, y = plant_data["x"], plant_data["y"]  # Load position
 
-                # Create plant sprite
-                plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()
-                new_plant = Plants(
-                    pos=(x, y),
-                    surface=plant_surface,
-                    groups=[self.all_sprites, self.plants],  # Add to sprite groups
-                    z=LAYERS['main'],
-                    cultivate_plants=plant_data
-                )
 
-                print(f"DEBUG: Planted {plant_info['name']} at ({x}, {y})")
+            for one_plant in all_currently_planted:
+                plant_info = one_plant["plant"] # Plant object 
+                x, y = one_plant["x"], one_plant["y"]  # Load x,y position
+                garden_obj = one_plant["garden"] # Garden object
+
+                # If current garden id matches the planted plant's garden id, create sprites
+                print(f"self.selected_garden['id]: {self.selected_garden['id']}") # debug
+                print(f" garden_obj: {garden_obj}")
+                if garden_obj['id'] == self.selected_garden['id']:
+                    # Create plant sprite
+                    plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()
+                    new_plant = Plants(
+                        pos=(x, y),
+                        surface=plant_surface,
+                        groups=[self.all_sprites, self.plants],  # Add to sprite groups
+                        z=LAYERS['main'],
+                        cultivate_plants=one_plant
+                    )
+
+                    print(f"DEBUG: Planted {plant_info['name']} at ({x}, {y})")
 
         else:
             print("DEBUG: Error fetching planted flowers:", response.text)
@@ -95,7 +108,7 @@ class Level:
         }
         
         # Endpoint for POST request
-        url = "http://127.0.0.1:5000/cultivated-plants"
+        url = "http://127.0.0.1:5000/cultivated-plants" # POST
 
         # Send the POST request to the API
         response = requests.post(url, json=data)
@@ -152,7 +165,7 @@ class Level:
 
 
             # DELETE fetch request
-            response = requests.delete(f"http://127.0.0.1:5000/cultivated-plants/{cultivated_plant_id}")
+            response = requests.delete(f"http://127.0.0.1:5000/cultivated-plants/{cultivated_plant_id}") # DELETE
 
             if response.status_code == 200:
                 print(f"DEBUG: Plant harvested and removed from the database")
