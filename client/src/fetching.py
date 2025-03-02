@@ -21,7 +21,7 @@ def get_players():
         print(f"error fetching{exc}")
         return []
 
-# aCTIVE IN LEVEL
+# ACTIVE IN LEVEL
 def get_plants():
     response = requests.get("http://127.0.0.1:5000/plants")
     

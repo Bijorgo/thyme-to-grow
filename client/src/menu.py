@@ -21,6 +21,7 @@ class MenuPage:
         player_data = get_players()
 
         for i, player in enumerate(player_data["players"]):
+            # enumerate tracks index (i), i is used to position buttons so they dont overlap
             self.buttons.append(Button(
                 pos=(100, 100 + i * 60), width=200, height=50,
                 text=f"Player {player['name']}",
@@ -53,6 +54,10 @@ class MenuPage:
                 selected_garden = response.json()
                 print(f"DEBUG: Fetched Garden: {selected_garden}")  # Debugging
 
+                pygame.event.clear() # Clear lingering events
+                self.running=False # Stop menu loop
+
+                # Create new level with clean state
                 level = Level(self.selected_player, selected_garden)  # Pass garden to level
                 level.run()  # Switch to level loop
                 self.running = False  # Exit menu loop
