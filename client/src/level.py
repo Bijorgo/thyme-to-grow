@@ -70,8 +70,8 @@ class Level:
                     # Create plant sprite
                     plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()
                     # Resize img
-                    new_width = plant_surface.get_width() * 2  # Example: doubling the size
-                    new_height = plant_surface.get_height() * 2
+                    new_width = plant_surface.get_width() * 3  
+                    new_height = plant_surface.get_height() * 3
                     resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
                     # init plant sprite
                     new_plant = Plants(
@@ -145,8 +145,8 @@ class Level:
             # Create new plant sprite, add tp plant sprite group
             plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()  # Load plant image
             # Resize img
-            new_width = plant_surface.get_width() * 2  # Example: doubling the size
-            new_height = plant_surface.get_height() * 2
+            new_width = plant_surface.get_width() * 3
+            new_height = plant_surface.get_height() * 3
             resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
             # init plant sprite
             new_plant = Plants(
