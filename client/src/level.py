@@ -34,11 +34,13 @@ class Level:
             
             # Create player sprite
             player_data = get_players() # Make the get request, function from fetching.py
+            
             for i, player_info in enumerate(player_data["players"]):
-                self.players.append(Player(
-                    pos=(640, 360 + i * 50),
-                    group=[self.all_sprites, self.collision_sprites],
-                    name=player_info["name"]
+                if self.selected_player['id'] == player_info['id']:
+                    self.players.append(Player(
+                        pos=(640, 360 + i * 50),
+                        group=[self.all_sprites, self.collision_sprites],
+                        name=player_info["name"]
                 ))
             self.load_plants()
 
