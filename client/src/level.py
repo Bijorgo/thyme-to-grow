@@ -24,8 +24,12 @@ class Level:
             print(f"Player {self.selected_player['name']}, garden {self.selected_garden['name']}, garden id {self.selected_garden['id']} creating level") # debug
 
             # Set background => this will need to change for unique backgrounds per level
+            # Window size
+            #SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
             # All garden backgrounds are currently generic (found in sprites.py)
-            self.background = Generic((0, 0), pygame.image.load('src/assets/bg2.png').convert_alpha(),
+            background_img = pygame.image.load('src/assets/bg2.png').convert_alpha() # image
+            resized_bg = pygame.transform.scale(background_img, (2000, 2000)) # resized
+            self.background = Generic((0, 0), resized_bg,
                                       self.all_sprites, LAYERS['ground'])
             
             # Create player sprite
