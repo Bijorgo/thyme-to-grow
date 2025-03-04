@@ -24,17 +24,23 @@ class Level:
             print(f"Player {self.selected_player['name']}, garden {self.selected_garden['name']}, garden id {self.selected_garden['id']} creating level") # debug
 
             # Set background => this will need to change for unique backgrounds per level
+            # Window size
+            #SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
             # All garden backgrounds are currently generic (found in sprites.py)
-            self.background = Generic((0, 0), pygame.image.load('src/assets/bg2.png').convert_alpha(),
+            background_img = pygame.image.load('src/assets/bg2.png').convert_alpha() # image
+            resized_bg = pygame.transform.scale(background_img, (2000, 2000)) # resized
+            self.background = Generic((0, 0), resized_bg,
                                       self.all_sprites, LAYERS['ground'])
             
             # Create player sprite
             player_data = get_players() # Make the get request, function from fetching.py
+            
             for i, player_info in enumerate(player_data["players"]):
-                self.players.append(Player(
-                    pos=(640, 360 + i * 50),
-                    group=[self.all_sprites, self.collision_sprites],
-                    name=player_info["name"]
+                if self.selected_player['id'] == player_info['id']:
+                    self.players.append(Player(
+                        pos=(640, 360 + i * 50),
+                        group=[self.all_sprites, self.collision_sprites],
+                        name=player_info["name"]
                 ))
             self.load_plants()
 
@@ -66,8 +72,8 @@ class Level:
                     # Create plant sprite
                     plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()
                     # Resize img
-                    new_width = plant_surface.get_width() * 2  # Example: doubling the size
-                    new_height = plant_surface.get_height() * 2
+                    new_width = plant_surface.get_width() * 3  
+                    new_height = plant_surface.get_height() * 3
                     resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
                     # init plant sprite
                     new_plant = Plants(
@@ -141,8 +147,8 @@ class Level:
             # Create new plant sprite, add tp plant sprite group
             plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()  # Load plant image
             # Resize img
-            new_width = plant_surface.get_width() * 2  # Example: doubling the size
-            new_height = plant_surface.get_height() * 2
+            new_width = plant_surface.get_width() * 3
+            new_height = plant_surface.get_height() * 3
             resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
             # init plant sprite
             new_plant = Plants(

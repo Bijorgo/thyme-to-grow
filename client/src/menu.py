@@ -17,7 +17,21 @@ class MenuPage:
         self.setup()
 
     def setup(self):
-        Menu((0, 0), pygame.image.load('src/assets/menubg.png').convert_alpha(), self.ui_sprites, LAYERS['ground'])
+        # Window size
+        SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
+
+        # Background image
+        menu_bg = pygame.image.load('src/assets/menubg.png').convert_alpha()
+
+        # Resize background img
+        #new_size = (1024, 1024)  # Resized dimensions 
+        menu_bg_resized = pygame.transform.scale(menu_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        # Rect for centering THIS MAY BE REDUNANT => REVISIT
+        menu_bg_rect = menu_bg_resized.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+
+
+
+        Menu(menu_bg_rect.topleft, menu_bg_resized, self.ui_sprites, LAYERS['ground'])
         player_data = get_players()
 
         for i, player in enumerate(player_data["players"]):
