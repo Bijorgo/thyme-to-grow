@@ -266,7 +266,7 @@ class Level:
                 "y": self.dragging_plant.rect.centery
             }
 
-            response = requests.put(f"http://127.0.0.1:5000/cultivated-plants/{self.dragging_plant.cultivate_plants_obj['id']}", json=plant_data)
+            response = requests.patch(f"http://127.0.0.1:5000/cultivated-plants/{self.dragging_plant.cultivate_plants_obj['id']}", json=plant_data)
             
             if response.status_code == 200:
                 print(f"DEBUG: Plant placed at new position ({self.dragging_plant.rect.centerx}, {self.dragging_plant.rect.centery})")
