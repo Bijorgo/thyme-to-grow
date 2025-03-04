@@ -3,7 +3,7 @@ import pygame
 class Button:
     def __init__(self, pos, width, height, text, action=None):
         self.rect = pygame.Rect(pos, (width, height))
-        self.color = (100, 200, 100)  # Button color
+        self.color = (140, 50, 0)  # Button color
         self.text = text
         self.font = pygame.font.Font(None, 36)  # Default font, size 36
         self.text_surface = self.font.render(self.text, True, (255, 255, 255))
@@ -22,3 +22,16 @@ class Button:
         if self.action:
             print(f"Button '{self.text}' clicked from buttons.py") # debug 
             self.action()  # Call the button's action if defined
+
+
+
+class MainMenuButton:
+    def menu_button(self):
+        Button(
+                    pos=(0, 0), width=140, height=50,
+                    text=f"Main Menu",
+                    action=self.return_to_menu
+            )
+    #def return_to_menu(self):
+        #print("Return to main menu")
+        #self.running=False

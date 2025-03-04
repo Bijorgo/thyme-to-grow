@@ -74,31 +74,34 @@ class MenuPage:
                 # Create new level with clean state
                 level = Level(self.selected_player, selected_garden)  # Pass garden to level
                 level.run()  # Switch to level loop
-                self.running = False  # Exit menu loop
+
+                self.running = True  # Restart menu for when level loop ends
 
             else:
                 print(f"ERROR: Failed to fetch garden ID {garden_id}. Status {response.status_code}, Response: {response.text}")
-
         except requests.exceptions.JSONDecodeError:
             print(f"ERROR: JSON decoding failed for response from /gardens/{garden_id}. Raw text: {response.text}")
-
         except requests.exceptions.RequestException as e:
             print(f"ERROR: Request failed for /gardens/{garden_id}. Exception: {e}")
 
     # Game loop
     def run(self):
         while self.running:
+            # Create background 
             self.display_surface.fill('black')
             self.ui_sprites.update(0)  
             self.ui_sprites.draw(self.display_surface)
 
+            # Create buttons
             for button in self.buttons + self.garden_buttons:
                 button.draw(self.display_surface)
 
+            # Events listeners 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
+                # Mouse clicks    
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     for button in self.buttons + self.garden_buttons:
                         if button.is_clicked(pygame.mouse.get_pos()):

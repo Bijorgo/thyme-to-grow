@@ -3,6 +3,7 @@ from config import *
 from src.player import Player
 from src.sprites import Generic, Plants
 from src.fetching import get_players, get_plants
+from src.buttons import Button, MainMenuButton
 import requests
 
 class Level:
@@ -15,6 +16,7 @@ class Level:
         self.players = []
         self.plants = pygame.sprite.Group() # Create group of plant sprites
         self.running = True
+        self.buttons = []
         self.setup()
         print(f"Level initialized with player {selected_player} and garden {selected_garden}") # debug
 
@@ -23,11 +25,8 @@ class Level:
         if self.selected_garden and self.selected_garden:
             print(f"Player {self.selected_player['name']}, garden {self.selected_garden['name']}, garden id {self.selected_garden['id']} creating level") # debug
 
-            # Set background => this will need to change for unique backgrounds per level
-            # Window size
-            #SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
-            # All garden backgrounds are currently generic (found in sprites.py)
-            background_img = pygame.image.load('src/assets/bg2.png').convert_alpha() # image
+            # Set background => this will need to change for unique backgrounds per level            
+            background_img = pygame.image.load('src/assets/bg2.png').convert_alpha() # All garden backgrounds are currently generic (found in sprites.py)
             resized_bg = pygame.transform.scale(background_img, (2000, 2000)) # resized
             self.background = Generic((0, 0), resized_bg,
                                       self.all_sprites, LAYERS['ground'])
@@ -42,7 +41,19 @@ class Level:
                         group=[self.all_sprites, self.collision_sprites],
                         name=player_info["name"]
                 ))
+                    
+            # Load planted plants from database         
             self.load_plants()
+
+            # Load menu button 
+            self.menu_button = Button(
+                    pos=(0, 0), 
+                    width=140, 
+                    height=50,
+                    text=f"Main Menu",
+                    action=self.return_to_menu
+            )
+            self.buttons.append(self.menu_button)
 
     # Retrieve the already planted plants 
     def load_plants(self):
@@ -57,8 +68,6 @@ class Level:
         if response.status_code == 200:
             all_currently_planted = response.json().get("cultivated-plants", []) # Debug => use .get returns default(empty list) instead of error
             print(f"DEBUG: Loaded plants: {all_currently_planted}")
-
-
 
             for one_plant in all_currently_planted:
                 plant_info = one_plant["plant"] # Plant object 
@@ -83,9 +92,7 @@ class Level:
                         z=LAYERS['main'],
                         cultivate_plants=one_plant
                     )
-
                     print(f"DEBUG: Planted {plant_info['name']} at ({x}, {y})")
-
         else:
             print("DEBUG: Error fetching planted flowers:", response.text)
             
@@ -115,12 +122,9 @@ class Level:
             "plant_id": plant_id,
             "x" : plant_pos[0],
             "y" : plant_pos[1],
-
         }
-        
         # Endpoint for POST request
         url = "http://127.0.0.1:5000/cultivated-plants" # POST
-
         # Send the POST request to the API
         response = requests.post(url, json=data)
         
@@ -140,11 +144,7 @@ class Level:
                 print("DEBUG: Cultivate plant object missing or invalid.")
                 return
 
-            # position plant based on player position
-            #player = self.players[0] 
-            #plant_pos = (player.rect.centerx - 32, player.rect.centery - 32) # this should be the same as plant_pos line
-
-            # Create new plant sprite, add tp plant sprite group
+            # Create new plant sprite, add to plant sprite group
             plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()  # Load plant image
             # Resize img
             new_width = plant_surface.get_width() * 3
@@ -163,11 +163,6 @@ class Level:
             print(f"DEBUG: Error planting seed: {response.text}")
 
     def harvest_seeds(self, plant):
-        # Handle no plants
-        #if not self.plants:
-        #    print("DEBUG: No plants to harvest")
-        #    return
-        
         # Access cultivate plants object from sprite
         cultivate_plant = plant.cultivate_plants_obj
 
@@ -191,29 +186,17 @@ class Level:
                 print(f"DEBUG: Plant removed from the UI")
             else:
                 print(f"DEBUG: Error harvesting plant ") #{response.text}
+
+    # Exit this loop, return to menu
+    def return_to_menu(self):
+        print("Return to main menu")
+        self.running=False
                 
     # Game loop                
     def run(self):
             while self.running:
-                self.display_surface.fill('black')
-                delta_time = max(0.001, min(0.1, pygame.time.Clock().tick(60) / 1000))
-
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        exit()
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_h:
-                            player = self.players[0]
-                            for plant in self.plants: # check for all sprites
-                                if player.rect.colliderect(plant.rect): # Check if player is near plant
-                                    self.harvest_seeds(plant) # Call harvest function
-                                    break
-                    
-
-                    # Trigger planting by pressing p
-                    if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                        self.plant_seed()
+                self.display_surface.fill('black') # Black background
+                delta_time = max(0.001, min(0.1, pygame.time.Clock().tick(60) / 1000)) # Frame rate ?
 
                 # Draw all sprites
                 if self.players:
@@ -221,9 +204,31 @@ class Level:
                     self.all_sprites.custom_draw(player)
                     self.all_sprites.update(delta_time)
 
-                # Draw the plants
-                #self.plants.update(delta_time)  # Update all plant sprites
-                #self.plants.draw(self.display_surface)  # Draw all plant sprites
+                # Draw all buttons
+                for button in self.buttons:
+                    button.draw(self.display_surface)
+
+                # Look for events
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+                    if event.type == pygame.KEYDOWN:
+                        # Key h = harvest/delete plant
+                        if event.key == pygame.K_h:
+                            player = self.players[0]
+                            for plant in self.plants: # check for all sprites
+                                if player.rect.colliderect(plant.rect): # Check if player is near plant
+                                    self.harvest_seeds(plant) # Call harvest function
+                                    break
+                        # Key p = plant/create plant
+                        if event.key == pygame.K_p:
+                            self.plant_seed()
+                    # Click events       
+                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                        for button in self.buttons:
+                            if button.is_clicked(pygame.mouse.get_pos()):
+                                button.click()  # Call button's action
 
                 pygame.display.update()
 
