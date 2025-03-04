@@ -22,3 +22,16 @@ class Button:
         if self.action:
             print(f"Button '{self.text}' clicked from buttons.py") # debug 
             self.action()  # Call the button's action if defined
+
+
+
+class MainMenuButton:
+    def menu_button(self):
+        Button(
+                    pos=(0, 0), width=140, height=50,
+                    text=f"Main Menu",
+                    action=self.return_to_menu
+            )
+    #def return_to_menu(self):
+        #print("Return to main menu")
+        #self.running=False
