@@ -3,7 +3,7 @@ import pygame
 class Button:
     def __init__(self, pos, width, height, text, action=None):
         self.rect = pygame.Rect(pos, (width, height))
-        self.color = (100, 200, 100)  # Button color
+        self.color = (140, 50, 0)  # Button color
         self.text = text
         self.font = pygame.font.Font(None, 36)  # Default font, size 36
         self.text_surface = self.font.render(self.text, True, (255, 255, 255))

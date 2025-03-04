@@ -78,10 +78,8 @@ class MenuPage:
 
             else:
                 print(f"ERROR: Failed to fetch garden ID {garden_id}. Status {response.status_code}, Response: {response.text}")
-
         except requests.exceptions.JSONDecodeError:
             print(f"ERROR: JSON decoding failed for response from /gardens/{garden_id}. Raw text: {response.text}")
-
         except requests.exceptions.RequestException as e:
             print(f"ERROR: Request failed for /gardens/{garden_id}. Exception: {e}")
 
