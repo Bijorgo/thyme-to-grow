@@ -13,6 +13,8 @@ class Level:
         self.collision_sprites = pygame.sprite.Group() # Create a group of collidable sprites
         self.selected_player = selected_player
         self.selected_garden = selected_garden
+        self.dragging_plant = None
+        self.plant_initial_pos = None
         self.players = []
         self.plants = pygame.sprite.Group() # Create group of plant sprites
         self.running = True
@@ -208,12 +210,24 @@ class Level:
                 for button in self.buttons:
                     button.draw(self.display_surface)
 
+                # Handle plant dragging if 'm' key is held
+                if self.dragging_plant:
+                    self.handle_plant_dragging(player)
+
                 # Look for events
                 for event in pygame.event.get():
+                    # Quit event
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         exit()
+                    # Key down event 
                     if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_m:  # 'm' key is pressed
+                            for plant in self.plants:
+                                if player.rect.colliderect(plant.rect):  # If player collides with plant
+                                    self.dragging_plant = plant  # Start dragging this plant
+                                    self.plant_initial_pos = plant.rect.center  # Save initial position
+                                    break
                         # Key h = harvest/delete plant
                         if event.key == pygame.K_h:
                             player = self.players[0]
@@ -224,6 +238,11 @@ class Level:
                         # Key p = plant/create plant
                         if event.key == pygame.K_p:
                             self.plant_seed()
+                    # Key up event 
+                    if event.type == pygame.KEYUP:
+                        if event.key == pygame.K_m:  # 'm' key is released
+                            self.place_dragged_plant()  # Place the plant and update the database
+                        
                     # Click events       
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                         for button in self.buttons:
@@ -231,6 +250,30 @@ class Level:
                                 button.click()  # Call button's action
 
                 pygame.display.update()
+
+    # Add this function to handle dragging of plants
+    def handle_plant_dragging(self, player):
+        if self.dragging_plant:
+            # Update the plant's position to follow the player
+            self.dragging_plant.rect.center = player.rect.center
+            self.dragging_plant.update()  # Make sure to update the plant's sprite
+
+    def place_dragged_plant(self):
+        if self.dragging_plant:
+            # Update the plant's position in the database
+            plant_data = {
+                "x": self.dragging_plant.rect.centerx,
+                "y": self.dragging_plant.rect.centery
+            }
+
+            response = requests.patch(f"http://127.0.0.1:5000/cultivated-plants/{self.dragging_plant.cultivate_plants_obj['id']}", json=plant_data)
+            
+            if response.status_code == 200:
+                print(f"DEBUG: Plant placed at new position ({self.dragging_plant.rect.centerx}, {self.dragging_plant.rect.centery})")
+            else:
+                print(f"DEBUG: Error placing plant: {response.text}")
+
+            self.dragging_plant = None  # Reset dragging state
 
 
 
