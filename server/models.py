@@ -1,6 +1,5 @@
 from config import db, SerializerMixin, association_proxy
 from sqlalchemy.orm import validates #python / app level validations
-s
 
 # Plant Model
 class Plant(db.Model, SerializerMixin):
