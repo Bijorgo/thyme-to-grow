@@ -79,13 +79,26 @@ class Level:
                 # If current garden id matches the planted plant's garden id, create sprites
                 print(f"self.selected_garden['id]: {self.selected_garden['id']}") # debug
                 print(f" garden_obj: {garden_obj}")
+
                 if garden_obj['id'] == self.selected_garden['id']:
-                    # Create plant sprite
-                    plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()
-                    # Resize img
-                    new_width = plant_surface.get_width() * 3  
-                    new_height = plant_surface.get_height() * 3
-                    resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
+                    resized_plant = None 
+                    print(f"~~~~~~~~~~~~plant[]: {plant_info['name']}, plant.name plant_info.name, plant info: {plant_info} ")
+                    if plant_info["name"] == "Tulip":
+                        plant_surface = pygame.image.load('src/assets/tulip.png').convert_alpha()                     
+                    elif plant_info["name"] == "Thyme":                   
+                        plant_surface = pygame.image.load('src/assets/thyme.png').convert_alpha()                        
+                    elif plant_info["name"] == "Carrot":       
+                        plant_surface = pygame.image.load('src/assets/carrot.png').convert_alpha()
+                    else:
+                        print(f"Warning: No image found for plant {plant_info['name']}, using default.")
+                        plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()  # Provide a fallback image
+
+                    # Resize the plant image only if it's set
+                    if plant_surface:
+                        new_width = plant_surface.get_width() * 2  
+                        new_height = plant_surface.get_height() * 2
+                        resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
+                                                 
                     # init plant sprite
                     new_plant = Plants(
                         pos=(x, y),
@@ -145,13 +158,24 @@ class Level:
             if not isinstance(cultivate_plant, dict) or 'id' not in cultivate_plant:
                 print("DEBUG: Cultivate plant object missing or invalid.")
                 return
+            
+            # Assign image
+            if plant['name'] == "Tulip": 
+                plant_surface = pygame.image.load('src/assets/tulip.png').convert_alpha()                     
+            elif plant['name'] == "Thyme":                  
+                plant_surface = pygame.image.load('src/assets/thyme.png').convert_alpha()                        
+            elif plant['name'] == "Carrot": 
+                plant_surface = pygame.image.load('src/assets/carrot.png').convert_alpha()
+            else:
+                print(f"Warning: No image found for plant {plant['name']}, using default.")
+                plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()  # Provide a fallback image
 
-            # Create new plant sprite, add to plant sprite group
-            plant_surface = pygame.image.load('src/assets/flower.png').convert_alpha()  # Load plant image
-            # Resize img
-            new_width = plant_surface.get_width() * 3
-            new_height = plant_surface.get_height() * 3
-            resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
+            # Resize the plant image only if it's set
+            if plant_surface:
+                new_width = plant_surface.get_width() * 2  
+                new_height = plant_surface.get_height() * 2
+                resized_plant = pygame.transform.smoothscale(plant_surface, (new_width, new_height))
+
             # init plant sprite
             new_plant = Plants(
                 pos = plant_pos, 
