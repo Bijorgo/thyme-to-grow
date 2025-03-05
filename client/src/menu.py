@@ -14,31 +14,35 @@ class MenuPage:
         self.selected_player = None
         self.running = True  # Control loop
         self.ui_sprites = pygame.sprite.Group()
+        self.font = pygame.font.Font(None, 60) # Default font, size 60
         self.setup()
 
     def setup(self):
         # Window size
         SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
-        # Background image
+        # Background image load and resize
         menu_bg = pygame.image.load('src/assets/menubg.png').convert_alpha()
-
-        # Resize background img
-        #new_size = (1024, 1024)  # Resized dimensions 
         menu_bg_resized = pygame.transform.scale(menu_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
-        # Rect for centering THIS MAY BE REDUNANT => REVISIT
-        menu_bg_rect = menu_bg_resized.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-
-
-
+        menu_bg_rect = menu_bg_resized.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)) # Rect for centering THIS MAY BE REDUNANT => REVISIT
         Menu(menu_bg_rect.topleft, menu_bg_resized, self.ui_sprites, LAYERS['ground'])
-        player_data = get_players()
 
+        player_data = get_players() # Fetch request 
+
+        # Dynamic positioning 
+         # Button centering
+        button_width, button_height = 300, 60
+        button_y_start = SCREEN_HEIGHT // 3 # Start below title
+        button_spacing = 80
+
+        # Create player buttons 
         for i, player in enumerate(player_data["players"]):
             # enumerate tracks index (i), i is used to position buttons so they dont overlap
             self.buttons.append(Button(
-                pos=(100, 100 + i * 60), width=200, height=50,
-                text=f"Player {player['name']}",
+                pos=(SCREEN_WIDTH//2 - button_width//2, button_y_start + i * button_spacing), # Centered
+                width=button_width,
+                height=button_height, 
+                text=f"{player['name']}",
                 action=lambda player=player: self.show_gardens(player) 
                 # lambda captures player and 
                     # delays execution of self.show_gardens(player) until after button is clicked 
@@ -48,10 +52,17 @@ class MenuPage:
 
     def show_gardens(self, player):
         self.selected_player = player
+        button_width, button_height = 400, 60
+        button_y_start = SCREEN_HEIGHT // 2  # Gardens appear below player buttons
+
         self.garden_buttons = [
-            Button(pos=(500, 200 + i * 60), width=200, height=50,
-                   text=f"Garden {garden['name']}",
-                   action=lambda garden=garden: self.run_game(garden))
+            Button(
+                   pos=(SCREEN_WIDTH//2 - button_width//2, button_y_start + i * 70), # Centered
+                   width=button_width,
+                   height=button_height,
+                   text=f"{self.selected_player['name']}: {garden['name']}",
+                   action=lambda garden=garden: self.run_game(garden)
+            )
             for i, garden in enumerate(player["gardens"])
         ]
 
@@ -91,6 +102,11 @@ class MenuPage:
             self.display_surface.fill('black')
             self.ui_sprites.update(0)  
             self.ui_sprites.draw(self.display_surface)
+
+            # "Main Menu" text
+            title_surface = self.font.render("Main Menu", True, (0,0,0))
+            title_rect = title_surface.get_rect(center=(SCREEN_WIDTH//2, 100))
+            self.display_surface.blit(title_surface, title_rect)
 
             # Create buttons
             for button in self.buttons + self.garden_buttons:
