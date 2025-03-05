@@ -1,6 +1,8 @@
 from config import db, SerializerMixin, association_proxy
 from sqlalchemy.orm import validates #python / app level validations
-s
+
+# constraints: nullable, defaults
+# validations: data types, data structures
 
 # Plant Model
 class Plant(db.Model, SerializerMixin):
@@ -14,11 +16,14 @@ class Plant(db.Model, SerializerMixin):
     #serializer
     serializer_rules = ('cultivated', 'guide', '-cultivated.plants', '-guide.plants')
 
+
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
-            'level': self.level
+            'level': self.level,
+            #'cultivated': [cultivation.to_dict() for cultivation in self.cultivated],
+            #'guide': [g.to_dict() for g in self.guide]
         }
 
 
@@ -38,7 +43,9 @@ class Garden(db.Model, SerializerMixin):
         return {
             'id': self.id,
             'name': self.name,
-            'player_id': self.player_id
+            'player_id': self.player_id,
+            #'cultivated': [cultivation.to_dict() for cultivation in self.cultivated],
+            #'player': self.player.to_dict() if self.player else None
         }
 
 
@@ -48,13 +55,9 @@ class CultivatePlants(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     plant_id = db.Column(db.Integer, db.ForeignKey('plants.id'), nullable=False)
     garden_id = db.Column(db.Integer, db.ForeignKey('gardens.id'), nullable=False)
-    x = db.Column(db.Integer, nullable=False) # Store x coordinate of planting
-    y = db.Column(db.Integer, nullable=False) # Store y coordinate of planting
-
     # relationships
     plants = db.relationship("Plant", back_populates="cultivated")
     gardens = db.relationship("Garden", back_populates="cultivated")
-
     # serializer
     serializer_rules =('plants', 'gardens', '-plants.cultivated', '-gardens.cultivated')
 
@@ -62,9 +65,7 @@ class CultivatePlants(db.Model, SerializerMixin):
         return {
             'id': self.id,
             'plant': self.plants.to_dict() if self.plants else None,
-            'garden': self.gardens.to_dict() if self.gardens else None,
-            'x'  : self.x,
-            'y' : self.y
+            'garden': self.gardens.to_dict() if self.gardens else None
         }
 
 
