@@ -25,26 +25,26 @@ def seed_gardens():
     db.session.commit()
     print(f"{len(gardens)} gardens seeded!")
 
-def seed_cultivated():
+#def seed_cultivated():
     # This is for dev testing only
-    print("seeding cultivated plants is for dev testing only. If this was not intended, please stop and adjust.")
-    print("seeding cultivated plants...")
-    plants_from_db = Plant.query.all()
-    if not plants_from_db:
-        print("no plants available to seed, skipping seeding...")
-        return
-    gardens_from_db = Garden.query.all()
-    if not gardens_from_db:
-        print("no gardens available to seed, skipping seeding...")
-        return
-    cultivated_entries = []
+    #print("seeding cultivated plants is for dev testing only. If this was not intended, please stop and adjust.")
+    #print("seeding cultivated plants...")
+    #plants_from_db = Plant.query.all()
+    #if not plants_from_db:
+        #print("no plants available to seed, skipping seeding...")
+        #return
+    #gardens_from_db = Garden.query.all()
+    #if not gardens_from_db:
+        #print("no gardens available to seed, skipping seeding...")
+        #return
+    #cultivated_entries = []
     # assign every plant to every garden, tested and works
-    for garden in gardens_from_db:
-        for plant in plants_from_db: # both a garden id and plant id are required to create an entry
-            cultivated_entries.append(CultivatePlants(plant_id=plant.id, garden_id=garden.id))
-    db.session.add_all(cultivated_entries)
-    db.session.commit()
-    print(f"{len(cultivated_entries)} entries seeded!")
+    #for garden in gardens_from_db:
+        #for plant in plants_from_db: # both a garden id and plant id are required to create an entry
+            #cultivated_entries.append(CultivatePlants(plant_id=plant.id, garden_id=garden.id))
+    #db.session.add_all(cultivated_entries)
+    #db.session.commit()
+    #print(f"{len(cultivated_entries)} entries seeded!")
 
 def seed_field_guide():
     print("seeding field guide...")
