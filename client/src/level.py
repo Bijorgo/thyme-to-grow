@@ -37,10 +37,25 @@ class Level:
             player_data = get_players() # Make the get request, function from fetching.py
             
             for i, player_info in enumerate(player_data["players"]):
+
+                # Assign character image
+                if self.selected_player['name'] == "Fern":
+                    char_img = pygame.image.load('src/assets/fern.png')
+                elif self.selected_player['name'] == "Fernando":
+                    char_img = pygame.image.load('src/assets/fernando.png')
+                else:
+                    char_img = pygame.image.load('src/assets/default_char.png')
+                # Resize char_img
+                new_width = char_img.get_width() * 3
+                new_height = char_img.get_height() * 3
+                char_img_resize = pygame.transform.smoothscale(char_img, (new_width, new_height))
+
+                # Init Player instance 
                 if self.selected_player['id'] == player_info['id']:
                     self.players.append(Player(
                         pos=(640, 360 + i * 50),
                         group=[self.all_sprites, self.collision_sprites],
+                        image=char_img_resize,
                         name=player_info["name"]
                 ))
                     
