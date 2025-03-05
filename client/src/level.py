@@ -72,14 +72,9 @@ class Level:
             )
             self.buttons.append(self.menu_button)
 
-    # Retrieve the already planted plants 
+     
     def load_plants(self):
-        # DEBUG THIS FUNCTION
-        # Need to retrieve plants by garden id? not all cultivated plants
-        #for sprite in self.plants:
-         #   self.all_sprites.remove(sprite)  # Remove plant from all_sprites
-        #self.plants.empty()  # Clears plant group only
-            
+        # Retrieve the already planted plants            
         response = requests.get("http://127.0.0.1:5000/cultivated-plants") #GET
 
         if response.status_code == 200:
@@ -135,7 +130,7 @@ class Level:
 
         if not plants:
             print("DEBUG: No available plants (written from level)")
-            return
+            return # Exit loop
         
         # Select a random plant
         plant = random.choice(plants)  # Choose a random plant
