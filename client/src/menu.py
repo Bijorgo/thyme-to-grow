@@ -44,10 +44,11 @@ class MenuPage:
                 height=button_height, 
                 text=f"{player['name']}",
                 action=lambda player=player: self.show_gardens(player) 
-                # lambda captures player and 
-                    # delays execution of self.show_gardens(player) until after button is clicked 
-                # player = player ensures button "remembers" the player it was created with
-                    # rather than the last player of the loop
+                # Note: 
+                    # lambda captures player and 
+                        # delays execution of self.show_gardens(player) until after button is clicked 
+                    # player = player ensures button "remembers" the player it was created with
+                        # rather than the last player of the loop
             ))
 
     def show_gardens(self, player):

@@ -24,7 +24,6 @@ class Button:
             self.action()  # Call the button's action if defined
 
 
-
 class MainMenuButton:
     def menu_button(self):
         Button(
@@ -32,6 +31,3 @@ class MainMenuButton:
                     text=f"Main Menu",
                     action=self.return_to_menu
             )
-    #def return_to_menu(self):
-        #print("Return to main menu")
-        #self.running=False
