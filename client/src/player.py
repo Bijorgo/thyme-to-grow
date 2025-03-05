@@ -10,7 +10,7 @@ class Player(pygame.sprite.Sprite):
         # Set up sprite img and rect
         #self.image = pygame.Surface((32, 64)) # for testing
         #self.image.fill('black') # for testing
-        char_surface = pygame.image.load('src/assets/charactersprite.png').convert_alpha()
+        char_surface = pygame.image.load('src/assets/fern.png').convert_alpha()
         new_width = char_surface.get_width() * 3
         new_height = char_surface.get_height() * 3
 
